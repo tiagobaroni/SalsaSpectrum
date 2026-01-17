@@ -1,2 +1,108 @@
-# SalsaSpectrum
-Python reimplementation and extension of the original SalsaSpectrum module from the SALSA project (Varenius et al.), with added physical rigor, robust statistical noise handling, and a modernized architecture based on the Python scientific ecosystem.
+# SalsaSpectrum (Python Port)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![Status](https://img.shields.io/badge/status-beta-orange.svg)]()
+[![Ko-Fi](https://img.shields.io/badge/Support-Buy%20Me%20A%20Coffee-ff5f5f?style=flat&logo=ko-fi)](https://ko-fi.com/tiagobaroni)
+
+**An audit-oriented Python library for the reduction, calibration, and kinematic analysis of 21cm HI radio spectral data.**
+
+This project is a modern and performance-aware migration of the original MATLAB `SalsaSpectrum` class used by the SALSA radio telescopes at Onsala Space Observatory. It introduces rigorous physical auditing, robust statistical modeling, and a modernized software architecture while maintaining the spirit of the original tool.
+
+---
+
+##  Key Improvements & Migration Notes
+
+While based on the logic of the original MATLAB toolbox (circa 2015), this Python implementation introduces several physical, statistical, and architectural improvements to ensure data traceability and statistical validity.
+
+### 1. Physical Rigor & Calibration
+* **Complete Radiometer Equation:** Implements $\sigma_{theo}$ calculation explicitly accounting for the number of polarizations ($n_{pol}$), integration time, and effective noise bandwidth ($B_{eff}$). This allows for a direct, physical comparison between theoretical thermal noise and measured RMS.
+* **Traceable Beam Efficiency:** Dedicated handling for Main Beam ($\eta_{mb}$) and Forward Efficiency ($\eta_{f}$), ensuring that the conversion from Antenna Temperature ($T_A$) to Main Beam Brightness Temperature ($T_{MB}$) scales the data, noise limits, and baselines consistently.
+* **Metadata Auditing:** The system automatically detects and flags the provenance of critical parameters (e.g., whether System Temperature $T_{sys}$ is physically measured/read from the header or estimated), adding a layer of auditability to the results.
+
+### 2. Advanced Signal Processing
+* **Hybrid Baseline Modeling:** Replaces simple polynomial fitting with a mixed-model approach (**Polynomial + Sine Wave**). This robustly detects and removes instrumental standing waves (ripples), extracting physical parameters (amplitude, frequency, phase) of the interference.
+* **Robust Noise Estimation:** Moves away from simple standard deviation (sensitive to outliers) to robust estimators based on **MAD** (Median Absolute Deviation) and **PSD** (Power Spectral Density) to accurately determine thermal noise ($\sigma_{white}$).
+* **Colored Noise Treatment:** Calculates quality metrics ($\chi^2$, AIC) using **Effective Degrees of Freedom** ($\nu_{eff}$), correcting the statistical bias introduced by spectral smoothing (Hanning/Boxcar) and windowing.
+
+### 3. Statistical Fitting
+* **Fit Quality Metrics:** Automatic calculation of Reduced Chi-squared ($\chi^2_{red}$), Akaike Information Criterion (AIC), and Residual Sum of Squares (RSS) for objective model validation.
+* **Error Propagation:** Optimization using `scipy.optimize.curve_fit` with full covariance matrices to provide precise uncertainty estimates for Gaussian parameters (amplitude, center, width).
+
+### 4. Modern Architecture
+* **Python Ecosystem:** Fully migrated to `astropy` (WCS-compliant FITS handling) and `scipy`, removing dependence on proprietary MATLAB licenses.
+* **Memory Optimization:** Implementation using `__slots__` to significantly reduce memory footprint when processing large spectral datacubes.
+* **Modular Design:** Logic is decoupled into dedicated utilities (`utils.py`, `const_physical.py`), facilitating maintenance and independent testing.
+
+---
+
+##  Project Structure
+
+```text
+SalsaSpectrum/
+└── salsaspectrum/
+    ├── __init__.py        # Package initialization
+    ├── spectrum.py        # Main class (SalsaSpectrum)
+    ├── const_physical.py  # Single Source of Truth for physical constants
+    └── utils.py           # Math/Signal processing algorithms
+```
+
+##  Installation
+Requirements: Python 3.10+, numpy, scipy, astropy, matplotlib.
+
+Clone the repository and install:
+
+```
+git clone [https://github.com/tiagobaroni/SalsaSpectrum.git](https://github.com/tiagobaroni/SalsaSpectrum.git)
+cd SalsaSpectrum
+pip install .
+```
+
+##  Quick Start
+
+```
+from salsaspectrum.spectrum import SalsaSpectrum
+
+# 1. Load a FITS file
+spec = SalsaSpectrum('data/scan_001.fits')
+
+# 2. Apply Beam Efficiency (Calibrate to Tmb)
+spec.apply_beam_efficiency(eta_mb=0.7)
+
+# 3. Calculate Theoretical Noise (Physical Check)
+spec.calc_theoretical_noise(t_sys=100.0, integ_time=60.0)
+
+# 4. Fit Baseline (Hybrid Model: Poly + Sine)
+# Automatically detects standing waves
+spec.fit_baseline(
+    windows=[-200, -150, 50, 200], 
+    coord='vel', 
+    mixed_model=True
+)
+spec.subtract_baseline()
+
+# 5. Fit Gaussians (with colored noise correction)
+spec.fit_gaussians()
+
+# 6. Plot results
+spec.plot('vel', show_individual=True)
+```
+
+##  History & Attribution
+
+This project is a derivative work based on the original SalsaSpectrum MATLAB class.
+
+**Original Authors:** Daniel Dahlin and Eskil Varenius (Onsala Space Observatory).
+
+**Original Repository:** varenius/salsa
+
+**Original Documentation:** SALSA Software
+
+The original code was developed ~2013-2015 to support the EU-HOU (Hands-On Universe) project and the SALSA 2.3m radio telescopes in Onsala, Sweden.
+
+**Migration & Extensions (2026):** Tiago Henrique França Baroni migrated the code to Python and implemented the "Audit-Oriented" physical and statistical improvements detailed above.
+
+##  License
+This project is distributed under the MIT License, preserving the open spirit of the original work. See the LICENSE file for details.
+
+<div align="center"> <p>If this tool helps your research or learning, consider supporting the development!</p> <a href='https://ko-fi.com/tiagobaroni' target='_blank'> <img height='36' style='border:0px;height:36px;' src='https://www.google.com/search?q=https://storage.ko-fi.com/cdn/kofi2.png%3Fv%3D3' border='0' alt='Buy Me a Coffee at ko-fi.com' /> </a> </div>

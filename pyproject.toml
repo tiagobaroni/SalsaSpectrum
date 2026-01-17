@@ -1,0 +1,57 @@
+# pyproject.toml
+# Changelog:
+# - Added [build-system] for PEP 517 compliance.
+# - Relaxed dependency pins from "==" to ">=" to prevent conflicts.
+# - Updated python-requires to ">=3.10" (supports slots=True in dataclasses).
+# - Added professional English description and PyPI classifiers.
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "SalsaSpectrum"
+version = "0.9.0"
+description = "An audit-grade Python library for reduction, calibration, and kinematic analysis of 21cm HI radio spectral data from the Salsa telescopes."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT License"}
+authors = [
+    {name = "Tiago Henrique Franca Baroni", email = "t.baroni@gmail.com"},
+]
+keywords = [
+    "radio astronomy",
+    "spectral analysis",
+    "HI line",
+    "Onsala",
+    "kinematics",
+    "calibration"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "astropy>=6.0.0",
+    "matplotlib>=3.8.0",
+    "numpy>=1.26.0",
+    "requests>=2.31.0",
+    "scipy>=1.12.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/tiagobaroni/SalsaSpectrum"
+"Repository" = "https://github.com/tiagobaroni/SalsaSpectrum"
+"Bug Tracker" = "https://github.com/tiagobaroni/SalsaSpectrum/issues"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = ["tests"]

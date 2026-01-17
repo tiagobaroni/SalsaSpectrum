@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use this software in your research, please cite it using the metadata from this file."
+title: "SalsaSpectrum: An audit-grade Python library for 21cm HI spectral analysis"
+abstract: >-
+  A modern, high-performance Python migration of the original MATLAB
+  SalsaSpectrum class used by the SALSA radio telescopes. This library
+  introduces rigorous physical auditing (Radiometer Equation, Beam Efficiency),
+  robust statistical modeling (Colored Noise correction, Hybrid Baselines), and
+  a modernized software architecture based on Astropy and SciPy.
+type: software
+authors:
+  - family-names: Baroni
+    given-names: Tiago Henrique França
+    email: t.baroni@gmail.com
+    orcid: "https://orcid.org/0000-0002-3195-8663"
+repository-code: "https://github.com/tiagobaroni/SalsaSpectrum"
+url: "https://github.com/tiagobaroni/SalsaSpectrum"
+keywords:
+  - radio astronomy
+  - spectral analysis
+  - HI line
+  - calibration
+  - kinematics
+  - onsala
+license: MIT
+version: 0.9.0
+date-released: "2026-01-17"
+references:
+  - type: software
+    title: "SalsaSpectrum (Original MATLAB implementation)"
+    authors:
+      - family-names: Dahlin
+        given-names: Daniel
+      - family-names: Varenius
+        given-names: Eskil
+    url: "https://github.com/varenius/salsa"
+    year: 2015
+    notes: "Original MATLAB codebase from which this Python library was derived."
