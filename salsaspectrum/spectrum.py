@@ -62,14 +62,24 @@ from scipy.interpolate import interp1d
 import requests
 from typing import List, Union, Optional, Tuple, Any
 
-# Import shared physical constants
+# Import shared physical constants with package support
 try:
-    from const_physical import PhysicalConstants
+    # Attempt relative import (for installed package mode)
+    from .const_physical import PhysicalConstants
 except ImportError:
-    raise ImportError("const_physical.py not found. Please ensure it is in the same directory.")
+    # Fallback to absolute import (for local script execution)
+    try:
+        from const_physical import PhysicalConstants
+    except ImportError:
+        raise ImportError("const_physical.py not found. Please ensure it is in the same directory.")
 
-# Import processing utilities for robust sine fitting
-import utils as utils
+# Import processing utilities for robust sine fitting with package support
+try:
+    # Attempt relative import (for installed package mode)
+    from . import utils as utils
+except ImportError:
+    # Fallback to absolute import
+    import utils as utils
 
 
 class SalsaSpectrum:
